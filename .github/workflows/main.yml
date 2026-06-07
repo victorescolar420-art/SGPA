@@ -1,0 +1,35 @@
+name: Gerar Build do React
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependências e Gerar Build
+        run: |
+          npm install
+          CI=false npm run build
+
+      - name: Upload do arquivo final
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-app-compilado
+          path: build/
